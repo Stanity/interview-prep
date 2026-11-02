@@ -36,10 +36,14 @@ function containerRule(state, startLine, endLine, silent) {
 
   let nextLine = startLine + 1;
   let closed = false;
+  let inFence = false;
   for (; nextLine < endLine; nextLine++) {
     const s = state.bMarks[nextLine] + state.tShift[nextLine];
     const e = state.eMarks[nextLine];
-    if (state.src.slice(s, e).trim() === ':::') {
+    const raw = state.src.slice(s, e).trim();
+    if (raw.startsWith('```')) { inFence = !inFence; continue; }  // 代码块内的 ::: 不当作结束
+    if (inFence) continue;
+    if (raw === ':::') {
       closed = true;
       break;
     }
