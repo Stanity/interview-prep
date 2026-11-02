@@ -40,8 +40,6 @@ struct Cmp { bool operator()(const ListNode* a, const ListNode* b) const { retur
 | 31 | 下一个排列 | Medium | 三步：找上升点→交换→反转 |
 | 287 | 寻找重复数 | Medium | 快慢指针（下标当指针） |
 
-:::
-
 ---
 
 :::qa LC 215 · 数组中的第 K 个最大元素（Medium｜必刷）
