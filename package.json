@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node tools/build.mjs",
     "serve": "node tools/serve.mjs",
-    "dev": "node tools/build.mjs && node tools/serve.mjs"
+    "dev": "node tools/build.mjs && node tools/serve.mjs",
+    "publish": "node tools/publish.mjs"
   },
   "devDependencies": {
     "markdown-it": "^15.0.3"

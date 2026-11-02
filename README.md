@@ -48,7 +48,22 @@ npm run dev        # 构建 + 预览
 
 ## 部署到 GitHub Pages（手机在线访问）
 
-1. 新建仓库（建议 private 或 public 均可），把本目录推上去：
+**已部署**：https://Stanity.github.io/interview-prep/
+
+- 手机浏览器打开 → 「分享 / 菜单」→ **添加到主屏幕**，即可像 App 一样随时翻。
+- 仓库：https://github.com/Stanity/interview-prep （public，页面已加 `noindex`，不会被搜索引擎收录）
+- 首次配置只需做一次：**Settings → Pages → Build and deployment → Source 选 `GitHub Actions`**。
+
+### 日常更新：一条命令
+
+```bash
+npm run publish                        # 构建 + 提交 + 推送，Pages 约 1–2 分钟后自动更新
+npm run publish "docs: D1 RePref-Fact" # 自定义提交信息
+```
+
+### 从零搭一个（备查）
+
+1. 新建仓库（Public，**不要**勾选 README/.gitignore/license，保持空仓库）：
    ```bash
    git init -b main
    git add -A
@@ -56,8 +71,7 @@ npm run dev        # 构建 + 预览
    git remote add origin git@github.com:<你的账号>/<仓库名>.git
    git push -u origin main
    ```
-2. 仓库 **Settings → Pages → Build and deployment → Source 选 `GitHub Actions`**。
-3. 之后每次 `git push`，`.github/workflows/pages.yml` 会自动构建并发布，手机浏览器打开
-   `https://<你的账号>.github.io/<仓库名>/` 即是**最新版**，可「添加到主屏幕」。
+2. 仓库 **Settings → Pages → Source 选 `GitHub Actions`**。
+3. 之后每次 `git push`，`.github/workflows/pages.yml` 自动构建发布。
 
-> Pages 对私有仓库的站点是公开的（需要 Pro 才能限制访问）；如果介意，把仓库设为 private 并只用于离线分发，或把 Pages 关掉、用 `npm run serve` 的局域网地址。
+> 注：免费账号只有 public 仓库能开 Pages。本仓库内容已脱敏（无姓名/手机/邮箱/院所名），并在每个页面注入 `noindex`。
