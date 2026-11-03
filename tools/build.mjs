@@ -73,6 +73,11 @@ const groupNames = [...groups.keys()].sort((a, b) => {
   return cmp(a, b);
 });
 
+
+// 构建标识（用于确认手机拿到的是哪一版）
+const BUILD_STAMP = new Date().toLocaleString("zh-CN", { hour12: false, timeZone: "Asia/Shanghai" });
+const BUILD_TAG = `构建 ${BUILD_STAMP} · KaTeX`;
+
 const shortTitle = (t, n = 13) => (t.length > n ? `${t.slice(0, n)}…` : t);
 const totalQa = docs.reduce((s, d) => s + d.qaCount, 0);
 const totalWords = docs.reduce((s, d) => s + d.words, 0);
@@ -151,7 +156,7 @@ for (const doc of docs) {
     contentHtml: `<article class="doc" data-id="${esc(doc.slug)}" data-title="${esc(doc.title)}">
 ${doc.html || '<p class="empty">（空文档）</p>'}
 </article>`,
-    pagerHtml: pager,
+    pagerHtml: pager + `<div class="build-stamp">${BUILD_TAG}</div>`,
     quizHref: 'offline.html#quiz',
   });
   fs.writeFileSync(path.join(OUT, doc.fileName), html);

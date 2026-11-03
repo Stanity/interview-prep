@@ -249,6 +249,10 @@ details.qa[open] { background: var(--qa-open); border-color: var(--accent); }
   article.doc, .doc-list, .index-head, .pager, .group-title, .footer-note { padding-left: 24px; padding-right: 24px; }
 }
 
+.build-stamp {
+  max-width: 46rem; margin: 18px auto 0; padding: 0 16px 28px;
+  font-size: .72rem; color: var(--muted); text-align: center;
+}
 /* ---------- 公式（构建时由 KaTeX 预渲染，客户端无需 JS） ---------- */
 .math-block {
   margin: .9em 0; padding: 12px 10px;
@@ -527,6 +531,9 @@ export function page({ title, mode, slug, tocHtml, contentHtml, pagerHtml = '', 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#101214">
 <title>${title} · 面试备战</title>
