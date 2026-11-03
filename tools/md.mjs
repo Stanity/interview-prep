@@ -1,4 +1,5 @@
 import MarkdownIt from 'markdown-it';
+import { renderMath } from './math.mjs';
 
 const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 
@@ -115,8 +116,85 @@ function wrapMathBlock(text, MAX, CONT) {
   }).join("\n");
 }
 
+/** $$ ... $$ 块级公式（可跨行） */
+function mathBlockRule(state, startLine, endLine, silent) {
+  const start = state.bMarks[startLine] + state.tShift[startLine];
+  const max = state.eMarks[startLine];
+  const line = state.src.slice(start, max).trim();
+  if (!line.startsWith('$$')) return false;
+  if (silent) return true;
+
+  // 单行写法：$$ tex $$
+  if (line.length > 4 && line.endsWith('$$')) {
+    const tex = line.slice(2, -2).trim();
+    if (!tex) return false;
+    const token = state.push('math_block', 'math', 0);
+    token.content = tex;
+    token.map = [startLine, startLine + 1];
+    state.line = startLine + 1;
+    return true;
+  }
+
+  // 多行写法：首行 $$，直到单独一行的 $$
+  const body = [];
+  let nextLine = startLine + 1;
+  let closed = false;
+  for (; nextLine < endLine; nextLine++) {
+    const s2 = state.bMarks[nextLine] + state.tShift[nextLine];
+    const e2 = state.eMarks[nextLine];
+    const raw = state.src.slice(s2, e2);
+    if (raw.trim() === '$$') {
+      closed = true;
+      break;
+    }
+    body.push(raw);
+  }
+  if (!closed) return false;
+
+  const token = state.push('math_block', 'math', 0);
+  token.content = body.join('\n').trim();
+  token.map = [startLine, nextLine + 1];
+  state.line = nextLine + 1;
+  return true;
+}
+
+/** 行内公式：$...$（两侧不贴空格、不跨行，避免误伤普通美元符号） */
+function mathInlineRule(state, silent) {
+  const start = state.pos;
+  if (state.src[start] !== '$') return false;
+  if (state.src[start + 1] === '$') return false;
+  const after = state.src[start + 1];
+  if (after === undefined || after === ' ' || after === '\t' || after === '\n') return false;
+
+  let pos = start + 1;
+  while (pos < state.posMax) {
+    const ch = state.src[pos];
+    if (ch === '\n') return false;
+    if (ch === '$' && state.src[pos - 1] !== '\\') {
+      const tex = state.src.slice(start + 1, pos);
+      if (!tex.trim() || tex.endsWith(' ')) return false;
+      if (!silent) {
+        const token = state.push('math_inline', 'math', 0);
+        token.content = tex;
+      }
+      state.pos = pos + 1;
+      return true;
+    }
+    pos++;
+  }
+  return false;
+}
+
 function createMd() {
   const md = new MarkdownIt({ html: false, linkify: true, breaks: false });
+
+  // 数学公式（构建时由 KaTeX 预渲染，客户端不需要 JS）
+  md.block.ruler.before('fence', 'math_block', mathBlockRule, { alt: ['paragraph'] });
+  md.inline.ruler.before('escape', 'math_inline', mathInlineRule);
+  md.renderer.rules.math_block = (tokens, idx) =>
+    `<div class="math-block">${renderMath(tokens[idx].content, true)}</div>\n`;
+  md.renderer.rules.math_inline = (tokens, idx) =>
+    `<span class="math-inline">${renderMath(tokens[idx].content, false)}</span>`;
 
   md.block.ruler.before('fence', 'container', containerRule, {
     alt: ['paragraph', 'reference', 'blockquote', 'list'],

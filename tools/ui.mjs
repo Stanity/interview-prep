@@ -1,4 +1,5 @@
 /** 移动端 UI：样式 + 客户端脚本 + 页面骨架 */
+import { inlinedKatexCss } from './math.mjs';
 
 const LIGHT_VARS = `
   --fs: 17px;
@@ -247,7 +248,24 @@ details.qa[open] { background: var(--qa-open); border-color: var(--accent); }
 @media (min-width: 720px) {
   article.doc, .doc-list, .index-head, .pager, .group-title, .footer-note { padding-left: 24px; padding-right: 24px; }
 }
-`;
+
+/* ---------- 公式（构建时由 KaTeX 预渲染，客户端无需 JS） ---------- */
+.math-block {
+  margin: .9em 0; padding: 12px 10px;
+  background: var(--code-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  text-align: center;
+}
+.math-block .katex-display { margin: 0; }
+.math-block .katex { font-size: 1.02em; }
+.math-inline .katex { font-size: 1em; }
+.math-inline { white-space: nowrap; }
+code.math-error {
+  color: #cc0000; background: #fff2f2; border: 1px solid #ffd0d0;
+}
+` + '\n/* ===== KaTeX ===== */\n' + inlinedKatexCss();
 
 const CLIENT_JS = `
 (function () {
