@@ -255,15 +255,15 @@ details.qa[open] { background: var(--qa-open); border-color: var(--accent); }
 }
 /* ---------- 公式（构建时由 KaTeX 预渲染，客户端无需 JS） ---------- */
 .math-block {
-  margin: .9em 0; padding: 12px 10px;
+  margin: .9em 0; padding: 12px 12px;
   background: var(--code-bg);
   border-left: 3px solid var(--accent);
   border-radius: 10px;
   overflow-x: auto; -webkit-overflow-scrolling: touch;
-  text-align: center;
+  text-align: left;
 }
-.math-block .katex-display { margin: 0; }
-.math-block .katex { font-size: 1.02em; }
+.math-block .katex-display { margin: 0; text-align: left; }
+.math-block .katex { font-size: .98em; }
 .math-inline .katex { font-size: 1em; }
 .math-inline { white-space: nowrap; }
 code.math-error {
