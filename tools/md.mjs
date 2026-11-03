@@ -95,6 +95,17 @@ function createMd() {
   md.renderer.rules.table_open = () => '<div class="table-wrap"><table>';
   md.renderer.rules.table_close = () => '</table></div>';
 
+  // 代码块：无语言标记的视为"公式 / 示例块"，加 class 便于单独排版（自动换行）
+  md.renderer.rules.fence = (tokens, idx) => {
+    const token = tokens[idx];
+    const info = (token.info || '').trim().split(/\s+/)[0];
+    const body = md.utils.escapeHtml(token.content);
+    if (info) {
+      return `<pre><code class="language-${md.utils.escapeHtml(info)}">${body}</code></pre>\n`;
+    }
+    return `<pre class="plain"><code>${body}</code></pre>\n`;
+  };
+
   // 外链新窗口
   const defaultLink = md.renderer.rules.link_open ||
     ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options));

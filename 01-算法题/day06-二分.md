@@ -588,7 +588,7 @@ double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
 
     int m = A.size(), n = B.size();
     int half = (m + n + 1) / 2;        // 左半应有的元素个数（向上取整）
-    int l = 0, r = m;                  // 在 A 上二分切分点 i ∈ [0, m]
+    int l = 0, r = m;                  // 在 A 上二分切分点 i in [0, m]
 
     while (l <= r) {
         int i = l + (r - l) / 2;       // A 的左半取 A[0..i-1]

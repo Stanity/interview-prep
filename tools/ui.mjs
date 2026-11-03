@@ -2,6 +2,7 @@
 
 const LIGHT_VARS = `
   --fs: 17px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "Noto Sans Mono", "Segoe UI Symbol", "Cambria Math", "Apple Symbols", monospace;
   --bg: #f7f7f5;
   --fg: #1b1c1e;
   --muted: #5f6672;
@@ -95,15 +96,26 @@ blockquote {
   border-radius: 0 8px 8px 0;
 }
 code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-family: var(--mono);
   background: var(--code-bg); padding: .1em .34em; border-radius: 5px; font-size: .9em;
+  overflow-wrap: anywhere; word-break: break-word;
 }
 pre {
   background: var(--code-bg); padding: 11px 13px; border-radius: 10px;
-  overflow-x: auto; font-size: .84em; line-height: 1.6; margin: .8em 0;
-  -webkit-overflow-scrolling: touch;
+  font-size: .84em; line-height: 1.68; margin: .8em 0;
+  white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
-pre code { background: none; padding: 0; font-size: 1em; }
+pre code {
+  background: none; padding: 0; font-size: 1em; font-family: inherit;
+  white-space: inherit; overflow-wrap: inherit; word-break: inherit;
+}
+/* 无语言标记的块 = 公式 / 示例：字号略大、加边框，视觉上与代码区分 */
+pre.plain {
+  border: 1px solid var(--line);
+  font-size: .93em; line-height: 1.78; font-family: var(--mono);
+}
+pre.plain code { color: var(--fg); }
 .table-wrap {
   overflow-x: auto; -webkit-overflow-scrolling: touch;
   margin: .85em 0; border: 1px solid var(--line); border-radius: 10px;

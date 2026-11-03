@@ -231,7 +231,7 @@ int orangesRotting(vector<vector<int>>& g) {
 
 **题目**
 你这个学期必须选修 `numCourses` 门课程，记为 `0` 到 `numCourses - 1`。
-在选修某些课程之前需要一些先修课程。先修课程按数组 `prerequisites` 给出，其中 `prerequisites[i] = [aᵢ, bᵢ]`，表示如果要学习课程 `aᵢ` 则**必须**先学习课程 `bᵢ`。
+在选修某些课程之前需要一些先修课程。先修课程按数组 `prerequisites` 给出，其中 `prerequisites[i] = [a_i, b_i]`，表示如果要学习课程 `a_i` 则**必须**先学习课程 `b_i`。
 请你判断是否可能完成所有课程的学习？如果可以，返回 `true`；否则返回 `false`。
 
 **示例 1**
@@ -248,7 +248,7 @@ int orangesRotting(vector<vector<int>>& g) {
 解释：存在环（0 依赖 1，1 又依赖 0），不可能完成
 ```
 
-**约束**：`1 <= numCourses <= 2000`；`0 <= prerequisites.length <= 5000`；`prerequisites[i] = [aᵢ, bᵢ]` 且 `0 <= aᵢ, bᵢ < numCourses`；课程对互不相同
+**约束**：`1 <= numCourses <= 2000`；`0 <= prerequisites.length <= 5000`；`prerequisites[i] = [a_i, b_i]` 且 `0 <= a_i, b_i < numCourses`；课程对互不相同
 
 **提示 1（方向）**
 "能否完成所有课程" ≡ **有向图是否存在环** → 拓扑排序。用 Kahn 算法：不断取出**入度为 0** 的节点。
@@ -311,7 +311,7 @@ bool canFinish(int numCourses, vector<vector<int>>& pre) {
 :::qa LC 210 · 课程表 II（Medium｜必刷）
 
 **题目**
-现在你总共有 `numCourses` 门课需要选，记为 `0` 到 `numCourses - 1`。给你一个数组 `prerequisites`，其中 `prerequisites[i] = [aᵢ, bᵢ]`，表示在选修课程 `aᵢ` 前**必须**先选修 `bᵢ`。
+现在你总共有 `numCourses` 门课需要选，记为 `0` 到 `numCourses - 1`。给你一个数组 `prerequisites`，其中 `prerequisites[i] = [a_i, b_i]`，表示在选修课程 `a_i` 前**必须**先选修 `b_i`。
 返回你为了学完所有课程所安排的**学习顺序**。可能会有多个正确的顺序，你只要返回**任意一种**就可以了。如果不可能完成所有课程，返回一个**空数组**。
 
 **示例 1**
