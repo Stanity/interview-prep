@@ -113,7 +113,10 @@ pre code {
 /* 无语言标记的块 = 公式 / 示例：字号略大、加边框，视觉上与代码区分 */
 pre.plain {
   border: 1px solid var(--line);
-  font-size: .93em; line-height: 1.78; font-family: var(--mono);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  font-size: .86em; line-height: 1.85; font-family: var(--mono);
+  letter-spacing: -.01em;
 }
 pre.plain code { color: var(--fg); }
 .table-wrap {

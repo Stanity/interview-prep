@@ -67,6 +67,54 @@ function containerRule(state, startLine, endLine, silent) {
   return true;
 }
 
+// 把过长的"公式行"折成多行（不依赖浏览器 CSS，任何设备都不会溢出）
+const MATH_RE = /[=≈≠≤≥−×÷√∑∏∫θτβδλαγσμ^_{}]/;
+const chW = (ch) => (ch.codePointAt(0) > 0x2E80 ? 2 : 1);
+const visW = (arr) => arr.reduce((n, ch) => n + chW(ch), 0);
+function wrapMathBlock(text, MAX, CONT) {
+  MAX = MAX ? MAX : 40;
+  CONT = CONT ? CONT : "  ";
+  return text.split("\n").map((line) => {
+    if (!MATH_RE.test(line)) return line;
+    let cs = [...line];
+    if (visW(cs) <= MAX) return line;
+    const out = [];
+    let first = true;
+    while (cs.length) {
+      const limit = first ? MAX : MAX - CONT.length;
+      if (visW(cs) <= limit) { out.push((first ? "" : CONT) + cs.join("")); break; }
+      let acc = 0;
+      let cut = -1;
+      let cutOp = -1;
+      for (let i = 0; i < cs.length; i++) {
+        acc += chW(cs[i]);
+        if (acc > limit) break;
+        if (cs[i] === " ") {
+          cut = i;
+          const prev = cs[i - 1];
+          if (prev && "=\u2212+\u00D7,/[(\u2248\u2264\u2265".indexOf(prev) !== -1) cutOp = i;
+        }
+      }
+      if (cutOp > 0) cut = cutOp;
+      if (cut < 1) {
+        acc = 0;
+        cut = 0;
+        for (let i = 0; i < cs.length; i++) {
+          acc += chW(cs[i]);
+          if (acc > limit) break;
+          cut = i + 1;
+        }
+        if (cut < 1) cut = 1;
+      }
+      out.push((first ? "" : CONT) + cs.slice(0, cut).join("").replace(/\s+$/, ""));
+      cs = cs.slice(cut);
+      while (cs.length > 0 && cs[0] === " ") cs.shift();
+      first = false;
+    }
+    return out.join("\n");
+  }).join("\n");
+}
+
 function createMd() {
   const md = new MarkdownIt({ html: false, linkify: true, breaks: false });
 
@@ -103,7 +151,7 @@ function createMd() {
     if (info) {
       return `<pre><code class="language-${md.utils.escapeHtml(info)}">${body}</code></pre>\n`;
     }
-    return `<pre class="plain"><code>${body}</code></pre>\n`;
+    return `<pre class="plain"><code>${md.utils.escapeHtml(wrapMathBlock(token.content))}</code></pre>\n`;
   };
 
   // 外链新窗口
