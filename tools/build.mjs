@@ -6,7 +6,7 @@ import { page } from './ui.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
-const OUT = path.join(ROOT, 'dist');
+const OUT = path.join(ROOT, process.env.OUT_DIR ? process.env.OUT_DIR : 'dist');
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.git', '.github', 'tools', '.reasonix']);
 const SKIP_FILES = new Set(['readme.md']);
 
@@ -26,9 +26,22 @@ function walk(dir, acc = []) {
 
 const cmp = (a, b) => a.localeCompare(b, 'zh-Hans-CN', { numeric: true });
 
-const files = walk(ROOT).sort((a, b) =>
+let files = walk(ROOT).sort((a, b) =>
   cmp(path.relative(ROOT, a).replace(/\\/g, '/'), path.relative(ROOT, b).replace(/\\/g, '/')),
 );
+
+// ONLY 环境变量：逗号分隔的路径关键词，用于生成精简版（不设置则打包全部）
+const ONLY = (process.env.ONLY ? process.env.ONLY : '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+if (ONLY.length) {
+  files = files.filter((f) => {
+    const rel = path.relative(ROOT, f).replace(/\\/g, '/');
+    return ONLY.some((k) => rel.includes(k));
+  });
+  console.log("  [精简模式] 关键词 " + ONLY.length + " 个 → 命中 " + files.length + " 篇");
+}
 
 const docs = files.map((file) => {
   const rel = path.relative(ROOT, file).replace(/\\/g, '/');
